@@ -1,4 +1,4 @@
-package com.qihui.chaos.demo;
+package com.qihui.chaos.demo.concurrency;
 
 import java.util.ArrayList;
 import java.util.List;

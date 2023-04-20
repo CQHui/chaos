@@ -1,4 +1,4 @@
-package com.qihui.chaos.reflect;
+package com.qihui.chaos.demo.reflect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
