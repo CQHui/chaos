@@ -1,6 +1,7 @@
 package com.qihui.chaos.demo.concurrency;
 
-import org.junit.jupiter.api.Test;
+
+import org.junit.Test;
 
 /**
  * Created by Elliott Chen on 2023/4/20 15:22
