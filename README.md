@@ -1,4 +1,4 @@
-# 吞吐量比较 Springmvc vs Spring WebFlux vs Springmvc(虚拟线程)
+# 吞吐量比较 Spring MVC vs Spring WebFlux vs Springmvc(虚拟线程)
 
 
 ## 测试环境
