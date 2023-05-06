@@ -13,9 +13,10 @@ Apache Tomcat/10.1.7
 
 ### API
 
-GET /localhost/slowAPI?timeSlowness=150
+GET localhost:8080/slowAPI?timeSlowness=150
+GET localhost:8080/webflux/slowAPI?timeSlowness=150
 
-api响应时间：>150ms
+api响应时间：> 150ms
 
 ### JMeter 参数
 
