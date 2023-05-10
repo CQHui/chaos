@@ -72,3 +72,43 @@ spring mvc是非常经典的阻塞IO，遇到阻塞后throughput就会明显受�
 从Average和Throughput来看，使用虚拟线程和普通线程差距还是很明显的。虚拟线程对于每个API（Average 176ms）的延迟和理论上（150ms）差距不大。
 
 
+### Golang framework Gin
+再附一张golang实现的相同api的Throughput。对比看来，协程的吞吐接近于JAVA的虚拟线程吞吐量(运行环境和IDE皆不同, 并不能直接说明golang的性能比Java低, 不过总体还是接近)
+
+``` go
+
+package main
+
+import (
+"net/http"
+"strconv"
+"time"
+
+	"github.com/gin-gonic/gin"
+)
+
+// handle方法
+func Pong(c *gin.Context) {
+timeStr := c.DefaultQuery("timeSlowness", "1000")
+seconds, _ := strconv.Atoi(timeStr)
+time.Sleep(time.Duration(time.Duration(seconds) * time.Millisecond))
+c.String(http.StatusOK, "success")
+}
+
+func main() {
+
+	gin.DisableConsoleColor()
+
+	r := gin.Default()
+
+	r.GET("/slowAPI", Pong)
+
+	r.Run(":8080")
+}
+
+```
+
+| Label        | # Samples | Average | Median | 90% Line | 95% Line | 99% Line | Min  | Max  | Error % | Throughput | Received KB/sec | Sent KB/sec |
+| ------------ | --------- | ------- | ------ | -------- | -------- | -------- | ---- | ---- | ------- | ---------- | --------------- | ----------- |
+| HTTP Request | 1000000   | 212     | 204    | 269      | 297      | 359      | 150  | 1737 | 0.00%   | 3821.84106 | 459.07          | 507.59      |
+| TOTAL        | 1000000   | 212     | 204    | 269      | 297      | 359      | 150  | 1737 | 0.00%   | 3821.84106 | 459.07          | 507.59      |
