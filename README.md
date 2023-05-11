@@ -80,19 +80,18 @@ spring mvc是非常经典的阻塞IO，遇到阻塞后throughput就会明显受�
 package main
 
 import (
-"net/http"
-"strconv"
-"time"
-
-	"github.com/gin-gonic/gin"
+    "net/http"
+    "strconv"
+    "time"
+    "github.com/gin-gonic/gin"
 )
 
 // handle方法
 func Pong(c *gin.Context) {
-timeStr := c.DefaultQuery("timeSlowness", "1000")
-seconds, _ := strconv.Atoi(timeStr)
-time.Sleep(time.Duration(time.Duration(seconds) * time.Millisecond))
-c.String(http.StatusOK, "success")
+    timeStr := c.DefaultQuery("timeSlowness", "1000")
+    seconds, _ := strconv.Atoi(timeStr)
+    time.Sleep(time.Duration(time.Duration(seconds) * time.Millisecond))
+    c.String(http.StatusOK, "success")
 }
 
 func main() {
