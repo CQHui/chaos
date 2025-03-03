@@ -3,6 +3,8 @@ package com.qihui.chaos.demo.concurrency;
 
 import org.junit.Test;
 
+import java.util.function.Supplier;
+
 /**
  * Created by Elliott Chen on 2023/4/20 15:22
  */
@@ -31,6 +33,25 @@ public class WaitNotifyDemo {
     }
 
 
+    private void print(Supplier<Boolean> supplier) {
+        while (true) {
+            synchronized (this) {
+                if (supplier.get()) {
+                    System.out.println(Thread.currentThread().getName() + ":" + count);
+                    count++;
+                    this.notifyAll();
+                    continue;
+                }
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+
     @Test
     public void test() throws InterruptedException {
         threadsNum = 3;
@@ -45,5 +66,14 @@ public class WaitNotifyDemo {
         c.start();
 
         Thread.sleep(10L);
+    }
+
+    @Test
+    public void test2() throws InterruptedException {
+        new Thread(() -> print(() -> count % 3 == 0), "a").start();
+        new Thread(() -> print(() -> count % 3 == 1), "b").start();
+        new Thread(() -> print(() -> count % 3 == 2), "c").start();
+        Thread.sleep(10L);
+
     }
 }
