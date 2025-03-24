@@ -66,7 +66,7 @@ public class ChaosConfig {
 
     @Bean
     public VectorStore vectorStore(EmbeddingModel embeddingModel) {
-        return new SimpleVectorStore(embeddingModel);
+        return SimpleVectorStore.builder(embeddingModel).build();
     }
 
     @Bean
@@ -85,7 +85,7 @@ public class ChaosConfig {
             vectorStore.write(new TokenTextSplitter().transform(new TextReader(termsOfServiceDocs).read()));
 
             vectorStore.similaritySearch("Cancelling Bookings").forEach(doc -> {
-                log.info("Similar Document: {}", doc.getContent());
+                log.info("Similar Document: {}", doc.getText());
             });
         };
     }
