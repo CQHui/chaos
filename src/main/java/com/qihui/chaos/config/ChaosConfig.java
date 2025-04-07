@@ -13,6 +13,7 @@ import org.springframework.ai.reader.TextReader;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
@@ -22,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.support.TaskExecutorAdapter;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.concurrent.Executors;
 
@@ -65,8 +67,19 @@ public class ChaosConfig {
     }
 
     @Bean
-    public VectorStore vectorStore(EmbeddingModel embeddingModel) {
-        return SimpleVectorStore.builder(embeddingModel).build();
+    public VectorStore vectorStore(EmbeddingModel embeddingModel, JdbcTemplate jdbcTemplate) {
+        return PgVectorStore.builder(jdbcTemplate, embeddingModel)
+                .dimensions(1536)
+                .build();
+    }
+
+    /**
+     * 文本分割器
+     * @return
+     */
+    @Bean
+    public TokenTextSplitter tokenTextSplitter() {
+        return new TokenTextSplitter();
     }
 
     @Bean

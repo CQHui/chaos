@@ -1,13 +1,12 @@
 package com.qihui.chaos.controller.ai;
 
+import com.qihui.chaos.service.ChatService;
 import io.modelcontextprotocol.client.McpAsyncClient;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.image.*;
 import org.springframework.ai.mcp.McpToolUtils;
 import org.springframework.ai.tool.ToolCallback;
-import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,12 +30,12 @@ public class AiChatController {
 
     private final ImageModel imageModel;
 
-    private final List<McpAsyncClient> mcpAsyncClients;
+    private final ChatService chatService;
 
-    public AiChatController(ChatClient chatClient, ImageModel imageModel, List<McpAsyncClient> mcpAsyncClients) {
+    public AiChatController(ChatClient chatClient, ImageModel imageModel, ChatService chatService) {
         this.chatClient = chatClient;
         this.imageModel = imageModel;
-        this.mcpAsyncClients = mcpAsyncClients;
+        this.chatService = chatService;
     }
 
     @GetMapping("/chat")
@@ -70,15 +69,9 @@ public class AiChatController {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
-
-    @GetMapping("/mcp")
-    public Flux<String> mcp(@RequestParam(value = "chatId") String chatId,
-                            @RequestParam(value = "message", defaultValue = "今天天气怎么样?") String message) {
-        List<ToolCallback> toolCallbackProvider = McpToolUtils.getToolCallbacksFromAsyncClinents(mcpAsyncClients);
-
-        return chatClient.prompt().user(message)
-                .advisors(a -> a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId).param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 100))
-                .tools(toolCallbackProvider)
-                .stream().content();
+    @GetMapping("/rag")
+    public Flux<String> chat(
+            @RequestParam String message){
+        return chatService.chatByVectorStore(message);
     }
 }
