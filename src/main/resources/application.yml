@@ -17,6 +17,15 @@ spring:
   ai:
     dashscope:
       api-key: ${ai_api_key}
+  application:
+    name: chaos
+  datasource:
+    vector:
+      jdbc-url: jdbc:postgresql://localhost/vector_store
+      driver-class-name: org.postgresql.Driver
+      username: postgres
+      password: postgres
+  mandatory-file-encoding: UTF-8
 
 #    mcp:
 #      client:
@@ -28,11 +37,6 @@ spring:
 #          connections:
 #            server1:
 #              url: http://localhost:8081
-  mandatory-file-encoding: UTF-8
-  datasource:
-    username: postgres
-    password: postgres
-    url: jdbc:postgresql://localhost/vector_store
 
   # 调试日志
   logging:
@@ -41,5 +45,17 @@ spring:
         modelcontextprotocol:
           client: DEBUG
           spec: DEBUG
+      io.camunda.zeebe:
+        client: DEBUG
+      io.grpc:
+        netty: DEBUG
   main:
     allow-bean-definition-overriding: true
+
+camunda:
+  bpm:
+    client:
+      base-url: http://localhost:8080
+    zeebe:
+      broker:
+        gateway-address: localhost:26500
